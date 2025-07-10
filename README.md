@@ -47,6 +47,8 @@ This project was developed for educational purposes to demonstrate front-end UI/
 - This project does not use any frameworks (e.g., React, Vue).
 - All state is simulated with front-end logic; no actual data persistence or backend.
 
+## 👥 Collabration
+
 This project was collaboratively developed by a dedicated team of four members, each contributing their unique skills to bring the website to life:
 
 Ayindla Rithika - Created the Home page (before login/sign in).
