@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>BookVerse - Home</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="see2.css" />
+</head>
+<body>
+
+    <nav class="side-menu" id="sideMenu" aria-label="Sidebar navigation menu">
+        <h2>BookVerse</h2>
+    
+        <a href="genres.html" id="menuGenres">📚 Genres</a>
+        <a href="collection.html" id="menuCollection">📖 Collection</a>
+        <a href="history.html" id="menuHistory">🕒 History</a>
+        <a href="settings.html" id="menuSettings">⚙ Settings</a>
+        <a href="logout.html" id="menuLogout">🚪 Logout</a>
+    </nav>
+
+    <div class="overlay" id="overlay"></div>
+
+    <div class="topbar">
+        <div class="menu-icon" id="menuIcon" aria-label="Open menu" role="button" tabindex="0">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <input type="text" placeholder="Search books..." aria-label="Search books" id="searchInput" />
+        <a href="profile.html" class="profile-link" aria-label="Go to profile">👤 Profile</a>
+    </div>
+
+    <div class="main-content" role="main" tabindex="0">
+
+        <div class="carousel-container" id="carouselContainer" aria-label="Recommended Books Carousel">
+            <div class="carousel-track" id="carouselTrack">
+                </div>
+            <div class="carousel-dots" id="carouselDots">
+                </div>
+        </div>
+
+        <div class="section" aria-label="Books already read by user">
+            <div class="section-title">Books Read</div>
+            <div class="book-row" id="booksReadRow">
+                </div>
+        </div>
+
+        <div class="section" aria-label="Books saved by user">
+            <div class="section-title"> Saved Books</div>
+            <div class="book-row" id="booksSavedRow">
+                </div>
+        </div>
+
+        <div class="section" aria-label="Suggested books for user">
+            <div class="section-title">Suggested Books</div>
+            <div class="book-row" id="suggestedBooksRow">
+                </div>
+        </div>
+
+    </div>
+
+    <div class="modal-overlay" id="modalOverlay" tabindex="-1"></div>
+    <div class="modal" id="bookModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalDesc">
+        <div class="modal-header">
+            <h3 id="modalTitle"></h3>
+            <button class="modal-close" id="modalCloseBtn" aria-label="Close modal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <img id="modalBookImage" src="" alt="Book cover" />
+            <p class="author" id="modalAuthor"></p>
+        </div>
+        <div class="modal-buttons">
+            <button class="btn-read-now" id="btnReadNow">Read Now</button>
+            <button class="btn-read-later" id="btnReadLater">Read Later</button>
+            <button class="btn-wishlist" id="btnWishlist">Wishlist</button>
+            <button class="btn-buy-now" id="btnBuyNow">Buy Now</button>
+        </div>
+    </div>
+
+    <script src="see2.js"></script>
+</body>
+</html>

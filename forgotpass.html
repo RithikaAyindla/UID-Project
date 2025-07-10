@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Reset Password</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="commonstyle.css" />
+
+</head>
+<body class="d-flex justify-content-center align-items-center vh-100 bg-light">
+
+  <div class="card p-4 shadow" style="width: 400px;">
+    <h4 class="text-center mb-3">Reset Password</h4>
+
+    <select class="form-select mb-3" id="method">
+      <option selected value="email">Use Email</option>
+      <option value="phone">Use Phone Number</option>
+    </select>
+
+    <input type="text" id="contactInput" class="form-control mb-3" placeholder="Enter email or phone" />
+    <button class="btn btn-primary w-100" onclick="sendReset()">Send Reset Link</button>
+  </div>
+
+  <script>
+    function sendReset() {
+      alert("Reset link sent to your " + document.getElementById("method").value);
+    }
+  </script>
+
+</body>
+</html>

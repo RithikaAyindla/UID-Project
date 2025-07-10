@@ -1,0 +1,596 @@
+/* General Resets and Body Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(to bottom, #121212, #181818);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden; /* Prevent body scroll, main content handles scroll */
+}
+
+/* Topbar Styling */
+.topbar {
+    padding: 1rem 1.5rem;
+    background-color: #181818;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #282828;
+    position: relative;
+    z-index: 10;
+    gap: 1rem;
+}
+
+/* Hamburger Menu Icon */
+.menu-icon {
+    width: 30px;
+    height: 22px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+.menu-icon div {
+    height: 4px;
+    background-color: #1db954;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+/* Hamburger to X animation */
+.menu-icon.active div:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.menu-icon.active div:nth-child(2) {
+    opacity: 0;
+}
+
+.menu-icon.active div:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
+}
+
+/* Topbar Search Input */
+.topbar input {
+    background-color: #333;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    color: #fff;
+    width: 300px;
+    max-width: 100%;
+    flex-grow: 1;
+    outline: none;
+}
+
+.topbar input::placeholder {
+    color: #b3b3b3;
+}
+
+/* Profile Link */
+.topbar a.profile-link {
+    color: #1db954;
+    text-decoration: none;
+    font-weight: bold;
+    white-space: nowrap;
+    transition: color 0.3s ease;
+}
+
+.topbar a.profile-link:hover {
+    color: #1ed760;
+}
+
+/* Sliding Side Menu */
+.side-menu {
+    position: fixed;
+    top: 0;
+    left: -240px; /* Hidden offscreen */
+    width: 240px;
+    height: 100%;
+    background-color: #000;
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    transition: left 0.3s ease;
+    z-index: 20;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.side-menu.open {
+    left: 0;
+}
+
+.side-menu h2 {
+    color: #1db954;
+    font-size: 1.8rem;
+    margin-bottom: 2.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 2px solid #1db954;
+    padding-bottom: 10px;
+}
+
+.side-menu a {
+    color: #b3b3b3;
+    text-decoration: none;
+    margin: 0.75rem 0;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.side-menu a:hover {
+    color: #fff;
+    background-color: #282828;
+}
+
+/* Overlay for Menu and Modal */
+.overlay, .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease;
+    z-index: 15; /* Below modal, above side-menu */
+}
+
+.overlay.show, .modal-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Main Content Area */
+.main-content {
+    flex-grow: 1;
+    overflow-y: auto; /* Enable scrolling for main content */
+    padding: 1.5rem 2rem 2rem 2rem;
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: #555 #181818; /* Firefox */
+}
+
+.main-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.main-content::-webkit-scrollbar-track {
+    background: #181818;
+}
+
+.main-content::-webkit-scrollbar-thumb {
+    background-color: #555;
+    border-radius: 4px;
+}
+
+/* Carousel Specific Styles */
+.carousel-container {
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto 3rem auto;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8);
+    background-color: #1f1f1f;
+}
+
+.carousel-track {
+    display: flex;
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Smooth animation */
+    width: fit-content; /* Allow track to be wider than container */
+}
+
+.carousel-card {
+    min-width: 100%; /* Each card takes full width of container */
+    flex-shrink: 0; /* Prevent shrinking */
+    user-select: none;
+    cursor: pointer;
+    position: relative;
+    display: block;
+    color: inherit;
+    text-decoration: none;
+}
+
+.carousel-card img {
+    width: 100%;
+    height: 320px;
+    object-fit: cover;
+    border-radius: 12px;
+    display: block;
+}
+
+.carousel-card .carousel-info {
+    position: absolute;
+    bottom: 15px;
+    left: 20px;
+    color: #1db954;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1.4rem;
+    user-select: none;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Carousel navigation dots */
+.carousel-dots {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 5;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.dot.active {
+    background-color: #1db954;
+    transform: scale(1.2);
+}
+
+/* Book Sections */
+.section {
+    margin-bottom: 2.5rem;
+}
+
+.section-title {
+    font-size: 1.6rem;
+    margin-bottom: 1.2rem;
+    font-weight: 700;
+    color: #fff;
+    border-left: 5px solid #1db954;
+    padding-left: 10px;
+}
+
+/* Horizontal Scroll for Book Lists */
+.book-row {
+    display: flex;
+    gap: 1.2rem;
+    overflow-x: auto;
+    padding-bottom: 0.8rem;
+    scroll-behavior: smooth;
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: #555 #1f1f1f; /* Firefox */
+}
+
+.book-row::-webkit-scrollbar {
+    height: 8px;
+}
+
+.book-row::-webkit-scrollbar-thumb {
+    background-color: #555;
+    border-radius: 4px;
+}
+
+.book-row::-webkit-scrollbar-track {
+    background: #1f1f1f;
+}
+
+/* Individual Book Card */
+.book-card {
+    background-color: #222;
+    border-radius: 10px;
+    overflow: hidden;
+    flex: 0 0 160px; /* Increased size for better visual */
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+    user-select: none;
+    position: relative;
+    display: flex; /* Use flex for vertical layout */
+    flex-direction: column;
+    color: inherit;
+    text-decoration: none;
+}
+
+.book-card:hover {
+    background-color: #333;
+    transform: translateY(-5px) scale(1.03);
+    box-shadow:
+        0 0 15px 3px rgba(29, 185, 84, 0.7),
+        0 0 25px 6px rgba(29, 185, 84, 0.5);
+    z-index: 10;
+}
+
+.book-card img {
+    width: 100%;
+    height: 220px; /* Adjusted height */
+    object-fit: cover;
+    display: block;
+    border-bottom: 1px solid #333;
+}
+
+.book-card .info {
+    padding: 0.75rem 0.85rem;
+    flex-grow: 1; /* Allow info to take remaining space */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.book-card h5 {
+    font-size: 1.1rem;
+    margin: 0 0 0.2rem 0;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.book-card p {
+    font-size: 0.9rem;
+    color: #aaa;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Modal Styles */
+/* Modal Styles */
+.modal {
+    position: fixed; /* Essential for overlaying */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.8); /* Start smaller */
+    background-color: #121212;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
+    width: 380px; /* Increased width */
+    max-width: 90vw;
+    padding: 2rem;
+    color: #fff;
+    z-index: 1000; /* Increased z-index significantly, just to be absolutely sure */
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+    /* Changed display instead of visibility for a more direct hidden state */
+    display: none;
+    /* Removed user-select: none here, can be added to individual elements if needed */
+}
+
+.modal.show {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    display: block; /* Make it visible when 'show' class is present */
+}
+
+/* Also adjust modal-overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    z-index: 999; /* Lower than modal, but higher than regular content */
+    transition: opacity 0.3s ease;
+    display: none; /* Hidden by default */
+}
+
+.modal-overlay.show {
+    opacity: 1;
+    display: block; /* Visible when 'show' class is present */
+}
+
+.modal-header {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   margin-bottom: 1rem; /* Reduced margin */
+   padding-bottom: 0.8rem; /* Reduced padding */
+   border-bottom: 1px solid #282828;
+}
+
+.modal-header h3 {
+   font-size: 1.6rem; /* Slightly smaller title */
+   margin: 0;
+   color: #fff; /* Keep title white */
+   text-align: left; /* Align title to the left */
+   flex-grow: 1;
+   font-weight: bold; /* Make the title stand out more */
+}
+
+.modal-close {
+   background: none;
+   border: none;
+   cursor: pointer;
+   font-size: 1.8rem; /* Slightly smaller close button */
+   font-weight: bold;
+   color: #aaa;
+   transition: color 0.3s ease, transform 0.2s ease;
+   padding: 0.2rem 0.5rem; /* Add some padding to make it easier to click */
+   line-height: 1;
+   border-radius: 4px; /* Add a subtle rounded background on hover */
+}
+
+.modal-close:hover {
+   color: #1db954;
+   background-color: #282828; /* Subtle background on hover */
+   transform: rotate(90deg);
+}
+.modal-body img {
+    width: 100%;
+    height: 400px; /* Increased height */
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+.modal-body p.author {
+   font-size: 1rem; /* Slightly smaller author name */
+   color: #bbb;
+   margin-top: 0.5rem; /* Add space below the image */
+   margin-bottom: 1.2rem; /* Slightly reduced bottom margin */
+   font-style: italic;
+   text-align: center;
+}
+
+.modal-buttons {
+   display: flex;
+   flex-wrap: wrap;
+   justify-content: center;
+   gap: 0.8rem; /* Slightly reduced gap between buttons */
+   padding-top: 1rem; /* Add some space above the buttons */
+}
+
+.modal-buttons button {
+   flex-grow: 1;
+   min-width: 120px; /* Slightly smaller minimum width */
+   padding: 0.7rem 1rem; /* Slightly reduced padding inside buttons */
+   border: none;
+   border-radius: 6px; /* Slightly more rounded corners */
+   font-weight: 600;
+   cursor: pointer;
+   transition: background-color 0.3s ease, transform 0.2s ease;
+   color: #121212;
+   font-size: 0.9rem; /* Slightly smaller font in buttons */
+   text-align: center; /* Ensure text is centered */
+}
+
+.modal-buttons button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.btn-read-now {
+   background-color: #28a745; /* A more standard green */
+   color: #fff;
+}
+
+.btn-read-now:hover {
+   background-color: #218838;
+}
+
+.btn-read-later {
+   background-color: #007bff; /* A more standard blue */
+   color: #fff;
+}
+
+.btn-read-later:hover {
+   background-color: #0056b3;
+}
+
+.btn-wishlist {
+   background-color: #dc3545; /* A more standard red/pink */
+   color: #fff;
+}
+
+.btn-wishlist:hover {
+   background-color: #c82333;
+}
+
+.btn-buy-now {
+   background-color: #ffc107; /* A more standard yellow/amber */
+   color: #212529; /* Dark text for better contrast */
+}
+
+.btn-buy-now:hover {
+   background-color: #e0a800;
+}
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .topbar {
+        padding: 0.8rem 1rem;
+    }
+
+    .topbar input {
+        width: 100%;
+        margin: 0 0.5rem;
+    }
+
+    .profile-link {
+        display: none; /* Hide profile link on smaller screens if desired */
+    }
+
+    .main-content {
+        padding: 1rem 1.2rem;
+    }
+
+    .carousel-card img {
+        height: 250px;
+    }
+
+    .carousel-card .carousel-info {
+        font-size: 1.1rem;
+        padding: 6px 10px;
+        bottom: 10px;
+        left: 15px;
+    }
+
+    .book-card {
+        flex: 0 0 130px; /* Adjust size for smaller screens */
+    }
+
+    .book-card img {
+        height: 180px;
+    }
+
+    .book-card h5 {
+        font-size: 0.95rem;
+    }
+
+    .book-card p {
+        font-size: 0.75rem;
+    }
+
+    .modal {
+        width: 300px;
+        padding: 1.2rem;
+    }
+
+    .modal-header h3 {
+        font-size: 1.5rem;
+    }
+
+    .modal-close {
+        font-size: 1.8rem;
+    }
+
+    .modal-body img {
+        height: 300px;
+    }
+
+    .modal-buttons button {
+        flex-grow: 1;
+        width: 100%; /* Stack buttons on very small screens */
+        min-width: unset;
+    }
+}
+
+@media (max-width: 480px) {
+    .side-menu {
+        width: 100%; /* Full width on extra small screens */
+        left: -100%;
+    }
+}

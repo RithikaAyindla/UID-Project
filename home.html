@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BookVerse - Home with Carousel</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, #121212, #181818);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Topbar with hamburger menu */
+    .topbar {
+      padding: 1rem 1.5rem;
+      background-color: #181818;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #282828;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Hamburger menu icon */
+    .menu-icon {
+      width: 30px;
+      height: 22px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .menu-icon div {
+      height: 4px;
+      background-color: #1db954;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    /* Animate hamburger to X when active */
+    .menu-icon.active div:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .menu-icon.active div:nth-child(2) {
+      opacity: 0;
+    }
+
+    .menu-icon.active div:nth-child(3) {
+      transform: rotate(-45deg) translate(5px, -5px);
+    }
+
+    .topbar input {
+      background-color: #333;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      color: #fff;
+      width: 300px;
+      max-width: 100%;
+    }
+
+    .topbar a.profile-link {
+      color: #1db954;
+      text-decoration: none;
+      font-weight: bold;
+      margin-left: 1rem;
+      white-space: nowrap;
+    }
+
+    /* Sliding menu panel */
+    .side-menu {
+      position: fixed;
+      top: 0;
+      left: -260px; /* hidden offscreen */
+      width: 240px;
+      height: 100%;
+      background-color: #000;
+      padding: 2rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      transition: left 0.3s ease;
+      z-index: 20;
+    }
+
+    .side-menu.open {
+      left: 0;
+    }
+
+    .side-menu h2 {
+      color: #1db954;
+      font-size: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .side-menu a {
+      color: #b3b3b3;
+      text-decoration: none;
+      margin: 1rem 0;
+      font-size: 1.1rem;
+    }
+
+    .side-menu a:hover {
+      color: #fff;
+    }
+
+    /* Overlay behind menu */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease;
+      z-index: 15;
+    }
+
+    .overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Main content scrollable */
+    .main-content {
+      flex-grow: 1;
+      overflow-y: auto;
+      padding: 1rem 2rem 2rem 2rem;
+    }
+
+    /* Carousel styles */
+    .carousel-container {
+      position: relative;
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto 2rem auto;
+      overflow: hidden;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.8);
+    }
+
+    .carousel-track {
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+    }
+
+    .carousel-card {
+      min-width: 100%;
+      user-select: none;
+      cursor: pointer;
+      position: relative;
+      display: block; /* anchors are block */
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .carousel-card img {
+      width: 100%;
+      height: 320px;
+      object-fit: cover;
+      border-radius: 12px;
+      display: block;
+    }
+
+    .carousel-card .carousel-info {
+      position: absolute;
+      bottom: 15px;
+      left: 20px;
+      color: #1db954;
+      background: rgba(0,0,0,0.6);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 1.25rem;
+      user-select: none;
+    }
+
+    /* Sections below carousel */
+    .section {
+      margin-bottom: 2rem;
+    }
+
+    .section-title {
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    /* Horizontal scroll for book lists */
+    .book-row {
+      display: flex;
+      gap: 1rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      scroll-behavior: smooth;
+    }
+
+    .book-row::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    .book-row::-webkit-scrollbar-thumb {
+      background-color: #555;
+      border-radius: 4px;
+    }
+
+    .book-card {
+      background-color: #222;
+      border-radius: 10px;
+      overflow: hidden;
+      flex: 0 0 140px;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+      user-select: none;
+      position: relative;
+      display: block; /* anchors are block */
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .book-card:hover {
+      background-color: #333;
+      transform: scale(1.1);
+      box-shadow:
+        0 0 10px 2px rgba(29, 185, 84, 0.7),
+        0 0 20px 4px rgba(29, 185, 84, 0.5),
+        0 0 30px 6px rgba(29, 185, 84, 0.3);
+      z-index: 10;
+    }
+
+    .book-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .book-card .info {
+      padding: 0.5rem 0.75rem;
+    }
+
+    .book-card h5 {
+      font-size: 1rem;
+      margin: 0;
+      color: #fff;
+    }
+
+    .book-card p {
+      font-size: 0.8rem;
+      color: #aaa;
+      margin: 0.2rem 0 0;
+    }
+
+    @media (max-width: 600px) {
+      .topbar input {
+        width: 100%;
+      }
+
+      .book-card {
+        flex: 0 0 120px;
+      }
+    }
+
+    /*dropdown style*/
+    .dropdown {
+  position: relative;
+  display: block;
+}
+
+.dropdown-toggle {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  text-align: left;
+  width: 100%;
+}
+
+.dropdown-menu {
+  display: none;
+  flex-direction: column;
+  background-color: #1e1e1e;
+  padding-left: 1rem;
+}
+
+.dropdown-menu a {
+  padding: 0.4rem 1rem;
+  color: #ccc;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-menu a:hover {
+  background-color: #333;
+  color: #fff;
+}
+
+.dropdown.open .dropdown-menu {
+  display: flex;
+}
+
+  </style>
+</head>
+<body>
+
+  <!-- Sliding Menu -->
+  <nav class="side-menu" id="sideMenu">
+    <h2>BookVerse</h2>
+    <a href="#">🏠 Home</a>
+    <a href="#">📚 Explore Books</a>
+    <!-- Genres Dropdown -->
+  <div class="dropdown">
+    <button class="dropdown-toggle" id="genreToggle">🎭 Genres</button>
+    <div class="dropdown-menu" id="genreMenu">
+      <a href="#">Fantasy</a>
+      <a href="#">Science Fiction</a>
+      <a href="#">Mystery</a>
+      <a href="#">Romance</a>
+      <a href="#">Non-Fiction</a>
+    </div>
+  </div>
+    <a href="login.html">🔐 Login</a>
+    <a href="signup.html">📝 Sign Up</a>
+  </nav>
+
+  <!-- Overlay -->
+  <div class="overlay" id="overlay"></div>
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="menu-icon" id="menuIcon" aria-label="Open menu" role="button" tabindex="0">
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+    <input type="text" placeholder="Search books..." />
+    <!-- Removed profile link -->
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+
+    <!-- Hero / Welcome Section -->
+    <div class="section text-center" style="margin-top: 2rem;">
+      <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">Welcome to BookVerse</h1>
+      <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">Discover, explore, and save your favorite books.</p>
+      <div>
+        <a href="login.html" class="btn btn-success me-2">Login</a>
+        <a href="signup.html" class="btn btn-outline-light">Sign Up</a>
+      </div>
+    </div>
+
+    <!-- Carousel -->
+    <div class="carousel-container" id="carouselContainer" aria-label="Recommended Books Carousel">
+      <div class="carousel-track" id="carouselTrack">
+        <!-- JS will generate slides -->
+      </div>
+    </div>
+
+    <!-- Suggested Books Only -->
+    <div class="section" aria-label="Popular Books">
+      <div class="section-title">Popular Picks</div>
+      <div class="book-row" id="suggestedBooksRow">
+        <!-- JS will generate cards -->
+      </div>
+    </div>
+
+    <!-- New Arrivals -->
+   <div class="section" aria-label="New Arrivals">
+      <div class="section-title">New Arrivals</div>
+      <div class="book-row" id="newArrivalsRow">
+    <!-- JS will generate cards -->
+  </div>
+</div>
+    
+    <!-- Editor's Choice -->
+<div class="section" aria-label="Editor's Choice">
+  <div class="section-title">Editor's Choice</div>
+  <div class="book-row" id="editorsChoiceRow">
+    <!-- JS will generate cards -->
+  </div>
+</div>
+
+<!-- Top Rated -->
+<div class="section" aria-label="Top Rated Books">
+  <div class="section-title">Top Rated</div>
+  <div class="book-row" id="topRatedRow">
+    <!-- JS will generate cards -->
+  </div>
+</div>
+
+  </div>
+
+  <script>
+    // Toggle menu open/close
+    const menuIcon = document.getElementById('menuIcon');
+    const sideMenu = document.getElementById('sideMenu');
+    const overlay = document.getElementById('overlay');
+
+    function toggleMenu() {
+      menuIcon.classList.toggle('active');
+      sideMenu.classList.toggle('open');
+      overlay.classList.toggle('show');
+    }
+
+    menuIcon.addEventListener('click', toggleMenu);
+    overlay.addEventListener('click', toggleMenu);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === "Escape" && sideMenu.classList.contains('open')) {
+        toggleMenu();
+      }
+    });
+
+    // Dummy data arrays for books
+    const recommendedBooks = [
+      {id: 1, title: "The Silent Patient", author: "Alex Michaelides", cover: "https://covers.openlibrary.org/b/id/8379256-L.jpg"},
+      {id: 2, title: "Where the Crawdads Sing", author: "Delia Owens", cover: "https://covers.openlibrary.org/b/id/11140162-L.jpg"},
+      {id: 3, title: "Becoming", author: "Michelle Obama", cover: "https://covers.openlibrary.org/b/id/8228696-L.jpg"},
+      {id: 4, title: "Educated", author: "Tara Westover", cover: "https://covers.openlibrary.org/b/id/9226693-L.jpg"},
+      {id: 5, title: "Normal People", author: "Sally Rooney", cover: "https://covers.openlibrary.org/b/id/11044148-L.jpg"}
+    ];
+
+    const booksRead = [
+      {id: 11, title: "1984", author: "George Orwell", cover: "https://covers.openlibrary.org/b/id/153541-L.jpg"},
+      {id: 12, title: "To Kill a Mockingbird", author: "Harper Lee", cover: "https://covers.openlibrary.org/b/id/8228691-L.jpg"},
+      {id: 13, title: "The Great Gatsby", author: "F. Scott Fitzgerald", cover: "https://covers.openlibrary.org/b/id/7222246-L.jpg"},
+      {id: 14, title: "Pride and Prejudice", author: "Jane Austen", cover: "https://covers.openlibrary.org/b/id/8231853-L.jpg"}
+    ];
+
+    const booksSaved = [
+      {id: 21, title: "The Hobbit", author: "J.R.R. Tolkien", cover: "https://covers.openlibrary.org/b/id/6979861-L.jpg"},
+      {id: 22, title: "Harry Potter and the Sorcerer's Stone", author: "J.K. Rowling", cover: "https://covers.openlibrary.org/b/id/7984916-L.jpg"},
+      {id: 23, title: "The Catcher in the Rye", author: "J.D. Salinger", cover: "https://covers.openlibrary.org/b/id/8231992-L.jpg"},
+      {id: 24, title: "The Alchemist", author: "Paulo Coelho", cover: "https://covers.openlibrary.org/b/id/8099257-L.jpg"}
+    ];
+
+    const suggestedBooks = [
+      {id: 31, title: "Sapiens", author: "Yuval Noah Harari", cover: "https://covers.openlibrary.org/b/id/8379511-L.jpg"},
+      {id: 32, title: "The Power of Habit", author: "Charles Duhigg", cover: "https://covers.openlibrary.org/b/id/8221251-L.jpg"},
+      {id: 33, title: "Atomic Habits", author: "James Clear", cover: "https://covers.openlibrary.org/b/id/10575816-L.jpg"},
+      {id: 34, title: "Thinking, Fast and Slow", author: "Daniel Kahneman", cover: "https://covers.openlibrary.org/b/id/8231958-L.jpg"},
+      {id: 35, title: "Deep Work", author: "Cal Newport", cover: "https://covers.openlibrary.org/b/id/10596508-L.jpg"}
+    ];
+
+     // Carousel generation
+    const carouselTrack = document.getElementById('carouselTrack');
+    recommendedBooks.forEach(book => {
+      const slide = document.createElement('a');
+      slide.className = 'carousel-card';
+      slide.href = `book-details.html?id=${book.id}`;
+      slide.setAttribute('tabindex', '0');
+      slide.setAttribute('aria-label', `Open book ${book.title} by ${book.author}`);
+      slide.innerHTML = `
+        <img src="${book.cover}" alt="${book.title} cover" />
+        <div class="carousel-info">${book.title}</div>
+      `;
+      carouselTrack.appendChild(slide);
+    });
+
+    let currentSlide = 0;
+    const totalSlides = recommendedBooks.length;
+
+    function moveCarousel() {
+      currentSlide = (currentSlide + 1) % totalSlides;
+      carouselTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
+    }
+
+    setInterval(moveCarousel, 4000);
+
+    // Suggested books only
+    function createBookCard(book) {
+      const card = document.createElement('a');
+      card.className = 'book-card';
+      card.href = `book-details.html?id=${book.id}`;
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('aria-label', `Open book ${book.title} by ${book.author}`);
+
+      card.innerHTML = `
+        <img src="${book.cover}" alt="${book.title} cover" loading="lazy" />
+        <div class="info">
+          <h5>${book.title}</h5>
+          <p>${book.author}</p>
+        </div>
+      `;
+      return card;
+    }
+
+    const suggestedBooksRow = document.getElementById('suggestedBooksRow');
+    suggestedBooks.forEach(book => suggestedBooksRow.appendChild(createBookCard(book)));
+
+    const newArrivals = [
+  {id: 41, title: "Fourth Wing", author: "Rebecca Yarros", cover: "https://covers.openlibrary.org/b/id/14434056-L.jpg"},
+  {id: 42, title: "The Midnight Library", author: "Matt Haig", cover: "https://covers.openlibrary.org/b/id/10958382-L.jpg"},
+  {id: 43, title: "The Paris Library", author: "Janet Skeslien Charles", cover: "https://covers.openlibrary.org/b/id/10453718-L.jpg"}
+];
+
+const editorsChoice = [
+  {id: 51, title: "Project Hail Mary", author: "Andy Weir", cover: "https://covers.openlibrary.org/b/id/11109971-L.jpg"},
+  {id: 52, title: "Lessons in Chemistry", author: "Bonnie Garmus", cover: "https://covers.openlibrary.org/b/id/13101795-L.jpg"},
+  {id: 53, title: "Circe", author: "Madeline Miller", cover: "https://covers.openlibrary.org/b/id/9257892-L.jpg"}
+];
+
+const topRated = [
+  {id: 61, title: "The Alchemist", author: "Paulo Coelho", cover: "https://covers.openlibrary.org/b/id/8228694-L.jpg"},
+  {id: 62, title: "The Book Thief", author: "Markus Zusak", cover: "https://covers.openlibrary.org/b/id/8281994-L.jpg"},
+  {id: 63, title: "A Man Called Ove", author: "Fredrik Backman", cover: "https://covers.openlibrary.org/b/id/8232926-L.jpg"}
+];
+
+const newArrivalsRow = document.getElementById('newArrivalsRow');
+newArrivals.forEach(book => newArrivalsRow.appendChild(createBookCard(book)));
+
+const editorsChoiceRow = document.getElementById('editorsChoiceRow');
+editorsChoice.forEach(book => editorsChoiceRow.appendChild(createBookCard(book)));
+
+const topRatedRow = document.getElementById('topRatedRow');
+topRated.forEach(book => topRatedRow.appendChild(createBookCard(book)));
+
+const genreToggle = document.getElementById('genreToggle');
+const genreMenu = document.getElementById('genreMenu');
+const dropdown = genreToggle.closest('.dropdown');
+
+genreToggle.addEventListener('click', () => {
+  dropdown.classList.toggle('open');
+});
+
+document.addEventListener('click', (e) => {
+  if (!dropdown.contains(e.target)) {
+    dropdown.classList.remove('open');
+  }
+});
+
+</script>
+</body>
+</html>

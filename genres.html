@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BookVerse - Genres</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    body {
+      background: #121212;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #eaeaea;
+    }
+
+    .sidebar {
+      background-color: #1f1f1f;
+      color: #a7a7a7;
+      height: 100vh;
+      padding: 20px;
+      width: 250px;
+      position: fixed;
+    }
+
+    .sidebar h4 {
+      font-weight: 700;
+      font-size: 1.6rem;
+      margin-bottom: 2rem;
+      color: #1ed760;
+    }
+
+    .sidebar .nav-link {
+      color: #b3b3b3;
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      transition: color 0.3s ease;
+    }
+
+    .sidebar .nav-link:hover {
+      color: #1ed760;
+      text-decoration: none;
+    }
+
+    .main-content {
+      margin-left: 270px;
+      padding: 30px 40px;
+      max-width: 1200px;
+    }
+
+    h2 {
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: #ffffff;
+    }
+
+    #searchInput {
+      background-color: #222;
+      border: 2px solid #1ed760;
+      color: #fff;
+      border-radius: 30px;
+      padding-left: 20px;
+      height: 45px;
+      font-size: 1rem;
+      margin-bottom: 2rem;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    #searchInput::placeholder {
+      color: #888;
+    }
+
+    #searchInput:focus {
+      outline: none;
+      box-shadow: 0 2px 14px #1ed760;
+    }
+
+    .genre-btn {
+      border-radius: 20px;
+      font-weight: 600;
+      margin-right: 10px;
+      padding: 10px 18px;
+      border: 2px solid #1ed760;
+      background-color: transparent;
+      color: #1ed760;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .genre-btn.active,
+    .genre-btn:hover {
+      background-color: #1ed760;
+      color: #121212;
+    }
+
+    #bookGrid {
+      column-count: 3;
+      column-gap: 1.5rem;
+    }
+
+    @media (max-width: 992px) {
+      #bookGrid {
+        column-count: 2;
+      }
+    }
+
+    @media (max-width: 600px) {
+      #bookGrid {
+        column-count: 1;
+      }
+    }
+
+    .book-card {
+      background: #1e1e1e;
+      margin-bottom: 1.5rem;
+      display: inline-block;
+      width: 100%;
+      border-radius: 15px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      overflow: hidden;
+      break-inside: avoid;
+    }
+
+    .book-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 28px rgba(30, 215, 96, 0.3);
+    }
+
+    .book-card img {
+      width: 100%;
+      border-bottom: 1px solid #333;
+      border-top-left-radius: 15px;
+      border-top-right-radius: 15px;
+    }
+
+    .card-body {
+      padding: 15px 20px;
+    }
+
+    .card-title {
+      font-weight: 700;
+      font-size: 1.2rem;
+      margin-bottom: 0.3rem;
+      color: #fff;
+    }
+
+    .card-text {
+      font-style: italic;
+      color: #aaa;
+      font-size: 0.9rem;
+    }
+
+    #noResultsMessage {
+      font-weight: 600;
+      font-size: 1.2rem;
+      color: #1ed760;
+      margin-top: 1.5rem;
+    }
+
+    .modal-content {
+      border-radius: 20px;
+      padding: 30px;
+      background-color: #181818;
+      color: #fff;
+    }
+
+    .modal-title {
+      font-weight: 700;
+      font-size: 1.8rem;
+      color: #1ed760;
+    }
+
+    .btn-action {
+      flex-grow: 1;
+      background-color: #1ed760;
+      border: none;
+      color: #121212;
+      font-weight: 600;
+      padding: 12px 0;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-action:hover {
+      background-color: #1db954;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <h4>📚 BookVerse</h4>
+    <ul class="nav flex-column">
+      <li><a class="nav-link" href="see2.html">🏠 Home</a></li>
+      <li><a class="nav-link" href="#" onclick="focusSearch()">🔍 Search</a></li>
+      <li><a class="nav-link" href="genres.html">🎭 Genres</a></li>
+      <li><a class="nav-link" href="settings.html">⚙ Settings</a></li>
+    </ul>
+  </div>
+
+  <div class="main-content">
+    <h2>Genres</h2>
+
+    <input type="text" id="searchInput" placeholder="Search books by title or author..." onkeyup="filterBooks()" />
+
+    <div class="genre-buttons mb-4">
+      <button class="genre-btn active" onclick="filterByGenre('all')">All</button>
+      <button class="genre-btn" onclick="filterByGenre('fiction')">Fiction</button>
+      <button class="genre-btn" onclick="filterByGenre('sci-fi')">Sci-Fi</button>
+      <button class="genre-btn" onclick="filterByGenre('romance')">Romance</button>
+    </div>
+
+    <div id="bookGrid">
+      <!-- Sample Book Cards -->
+      <div class="book-card" data-genre="fiction" data-title="The Great Gatsby" data-author="F. Scott Fitzgerald" data-description="A classic novel set in the Roaring Twenties..." data-cover="https://images-na.ssl-images-amazon.com/images/I/81af+MCATTL.jpg">
+        <img src="https://images-na.ssl-images-amazon.com/images/I/81af+MCATTL.jpg" alt="The Great Gatsby" />
+        <div class="card-body">
+          <h5 class="card-title">The Great Gatsby</h5>
+          <p class="card-text">By F. Scott Fitzgerald</p>
+        </div>
+      </div>
+
+      <div class="book-card" data-genre="sci-fi" data-title="1984" data-author="George Orwell" data-description="A dystopian novel about totalitarianism..." data-cover="https://images-na.ssl-images-amazon.com/images/I/71kxa1-0mfL.jpg">
+        <img src="https://images-na.ssl-images-amazon.com/images/I/71kxa1-0mfL.jpg" alt="1984" />
+        <div class="card-body">
+          <h5 class="card-title">1984</h5>
+          <p class="card-text">By George Orwell</p>
+        </div>
+      </div>
+
+      <div class="book-card" data-genre="sci-fi" data-title="Harry Potter" data-author="JK Rowling" data-description="A magical fantasy series..." data-cover="https://images-na.ssl-images-amazon.com/images/I/91HHqVTAJQL.jpg">
+        <img src="https://images-na.ssl-images-amazon.com/images/I/91HHqVTAJQL.jpg" alt="Harry Potter" />
+        <div class="card-body">
+          <h5 class="card-title">Harry Potter</h5>
+          <p class="card-text">By JK Rowling</p>
+        </div>
+      </div>
+    </div>
+
+    <p id="noResultsMessage" style="display:none;">No books found.</p>
+  </div>
+
+  <!-- Book Modal -->
+  <div class="modal fade" id="bookModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="bookModalLabel">Book Title</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <img id="modalCover" src="" style="width: 100%; border-radius: 12px; margin-bottom: 15px;" />
+          <p id="modalAuthor" style="font-style: italic;"></p>
+          <p id="modalDescription"></p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-action" onclick="alert('Read Now')">Read Now</button>
+          <button class="btn-action" onclick="alert('Read Later')">Read Later</button>
+          <button class="btn-action" onclick="alert('Added to Wishlist')">Add to Wishlist</button>
+          <button class="btn-action" onclick="alert('Buy Now')">Buy Now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    let currentGenre = "all";
+
+    function filterByGenre(genre) {
+      currentGenre = genre;
+      document.querySelectorAll(".genre-btn").forEach((btn) =>
+        btn.classList.toggle("active", btn.textContent.toLowerCase() === genre)
+      );
+      filterBooks();
+    }
+
+    function filterBooks() {
+      const input = document.getElementById("searchInput").value.toLowerCase();
+      const books = document.querySelectorAll(".book-card");
+      let anyVisible = false;
+
+      books.forEach((book) => {
+        const title = book.getAttribute("data-title").toLowerCase();
+        const author = book.getAttribute("data-author").toLowerCase();
+        const genre = book.getAttribute("data-genre");
+
+        const genreMatch = currentGenre === "all" || genre === currentGenre;
+        const searchMatch = title.includes(input) || author.includes(input);
+
+        book.style.display = genreMatch && searchMatch ? "inline-block" : "none";
+        if (genreMatch && searchMatch) anyVisible = true;
+      });
+
+      document.getElementById("noResultsMessage").style.display = anyVisible ? "none" : "block";
+    }
+
+    function focusSearch() {
+      const input = document.getElementById("searchInput");
+      input.focus();
+      input.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    const modal = new bootstrap.Modal(document.getElementById('bookModal'));
+    document.querySelectorAll(".book-card").forEach(card => {
+      card.addEventListener("click", () => {
+        document.getElementById("bookModalLabel").textContent = card.getAttribute("data-title");
+        document.getElementById("modalAuthor").textContent = "By " + card.getAttribute("data-author");
+        document.getElementById("modalDescription").textContent = card.getAttribute("data-description");
+        document.getElementById("modalCover").src = card.getAttribute("data-cover");
+        modal.show();
+      });
+    });
+  </script>
+</body>
+</html>
